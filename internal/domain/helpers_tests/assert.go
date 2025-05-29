@@ -19,3 +19,9 @@ func Len[T any](t *testing.T, sl []T, expectedLen int) {
 		t.Errorf("expected len %d, got len %d", expectedLen, len(sl))
 	}
 }
+
+func Equal[T comparable](t *testing.T, expected, actual T) {
+	if expected != actual {
+		t.Error("expected value:", expected, "actual value:", actual)
+	}
+}

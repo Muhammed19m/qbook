@@ -9,7 +9,7 @@ import (
 
 type Quotes struct {
 	QuoteRepo  domain.QuoteRepository
-	Identifier Identifier
+	Identifier *Identifier
 }
 
 type AddQuoteInput struct {

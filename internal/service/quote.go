@@ -49,11 +49,16 @@ func (q *Quotes) AllQuotes() ([]domain.Quote, error) {
 
 // получение случайно цитаты
 func (q *Quotes) GetRandomQuote() (domain.Quote, error) {
-	randId := rand.Intn(q.Identifier.CurrenID()) + 1
-
+	randId := rand.Intn(q.Identifier.CurrenID() + 1)
+	if randId == 0 {
+		randId = 1
+	}
 	qs, err := q.QuoteRepo.List(domain.QuotesFilter{ID: randId})
 	if err != nil {
 		return domain.Quote{}, err
+	}
+	if len(qs) != 1 {
+		return domain.Quote{}, nil
 	}
 
 	return qs[0], nil

@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"net/http"
 
@@ -19,8 +20,11 @@ func initHttpServer(s *service.Quotes) *http.Server {
 	}
 	registerHandlers(r)
 
+	addr := flag.String("addr", ":8080", "addr to listen on")
+	flag.Parse()
+
 	return &http.Server{
-		Addr:    ":8080",
+		Addr:    *addr,
 		Handler: r,
 	}
 }

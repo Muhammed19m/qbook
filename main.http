@@ -1,0 +1,28 @@
+### Variables
+@baseUrl = http://localhost:8080
+
+
+### Create new quote
+POST {{baseUrl}}/quotes
+Content-Type: application/json
+
+{
+  "author":"Muxa2", 
+  "quote":"1 is simple, but we insist on making it complicated."
+}
+
+
+### Get all quotes
+GET  {{baseUrl}}/quotes
+
+
+### Get random quotes
+GET  {{baseUrl}}/quotes/random
+
+	
+### Get Quotes by author
+GET  {{baseUrl}}/quotes?author=Muxa1
+    
+	
+### Delete quote by id
+DELETE {{baseUrl}}/quotes/2

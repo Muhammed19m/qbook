@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"errors"
-	"flag"
 	"fmt"
 	"net/http"
 
@@ -13,17 +12,18 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func initHttpServer(ss *services) *http.Server {
+type HttpServerConfig struct {
+	Addr string
+}
+
+func initHttpServer(ss *services, cfg HttpServerConfig) *http.Server {
 	r := &router.Router{
 		Service: ss,
 	}
 	registerHandlers(r)
 
-	addr := flag.String("addr", ":8080", "addr to listen on")
-	flag.Parse()
-
 	return &http.Server{
-		Addr:    *addr,
+		Addr:    cfg.Addr,
 		Handler: r,
 	}
 }
@@ -50,17 +50,10 @@ func runHttpServer(ctx context.Context, server *http.Server) error {
 }
 
 func registerHandlers(r *router.Router) {
+	// /quotes
 
-	// 1. Добавление новой цитаты (POST /quotes)
-	registerhandler.AddQuote(r)
-
-	// 2. Получение всех цитат (GET /quotes)
-	// 4. Фильтрация по автору (GET /quotes?author=Confucius)
-	registerhandler.AllQuotes(r)
-
-	// 3. Получение случайной цитаты (GET /quotes/random)
-	registerhandler.RandomQuote(r)
-
-	// 5. Удаление цитаты по ID (DELETE /quotes/{id})
-	registerhandler.DeleteQuoteByID(r)
+	registerhandler.AddQuote(r)        // 1. Добавление новой цитаты
+	registerhandler.GetQuotes(r)       // 2. Получение цитат
+	registerhandler.RandomQuote(r)     // 3. Получение случайной цитаты
+	registerhandler.DeleteQuoteByID(r) // 5. Удаление цитаты
 }

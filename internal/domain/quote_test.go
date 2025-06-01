@@ -4,6 +4,8 @@ import (
 	"math"
 	"strings"
 	"testing"
+
+	"github.com/Muhammed19m/qbook/pkg/assert"
 )
 
 func Test_Quote_ValidateID(t *testing.T) {
@@ -25,9 +27,10 @@ func Test_Quote_ValidateID(t *testing.T) {
 			quote := Quote{
 				ID: tt.field,
 			}
-			if err := quote.ValidateID(); tt.wantErr == (err != nil) {
+			if err := quote.ValidateID(); tt.wantErr {
+				assert.Error(t, err)
 			} else {
-				t.Errorf("unexpected error %v", err)
+				assert.NoError(t, err)
 			}
 		})
 	}

@@ -65,7 +65,7 @@ func (m *Memory) Delete(ID int) error {
 		return ErrQuoteNotCorrect
 	}
 	var idxCell int
-	var ok bool = false
+	var ok bool
 	m.mu.Lock()
 	for idCell, quote := range m.quotes {
 		if quote.ID == ID {

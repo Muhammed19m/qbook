@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	assert "github.com/Muhammed19m/qbook/internal/domain/helpers_tests"
+	assert "github.com/Muhammed19m/qbook/internal/domain/assert"
 )
 
 func NewService() *Identifier {

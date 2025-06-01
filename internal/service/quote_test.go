@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/Muhammed19m/qbook/internal/domain"
-	assert "github.com/Muhammed19m/qbook/internal/domain/helpers_tests"
+	assert "github.com/Muhammed19m/qbook/internal/domain/assert"
 	"github.com/Muhammed19m/qbook/internal/repository/memory"
 )
 
@@ -170,7 +170,7 @@ func Test_Quotes_GetRandomQuote(t *testing.T) {
 func Test_Quotes_QuoteByAuthor(t *testing.T) {
 	t.Run("из пустого списка - вернется пустой список", func(t *testing.T) {
 		qService := NewServiceQuotes()
-		qs, err := qService.QuoteByAuthor(QuoteByAuthorInput{
+		qs, err := qService.Quotes(QuotesInput{
 			Author: "Muhammed",
 		})
 		assert.NoError(t, err)
@@ -178,7 +178,7 @@ func Test_Quotes_QuoteByAuthor(t *testing.T) {
 	})
 	t.Run("передаваемый аргумент Author должен быть валиден", func(t *testing.T) {
 		qService := NewServiceQuotes()
-		qs, err := qService.QuoteByAuthor(QuoteByAuthorInput{
+		qs, err := qService.Quotes(QuotesInput{
 			Author: "",
 		})
 		assert.Error(t, err)
@@ -208,7 +208,7 @@ func Test_Quotes_QuoteByAuthor(t *testing.T) {
 			assert.NoError(t, err)
 		}
 
-		qs, err := qService.QuoteByAuthor(QuoteByAuthorInput{
+		qs, err := qService.Quotes(QuotesInput{
 			Author: "Muhammed",
 		})
 		assert.NoError(t, err)
@@ -238,7 +238,7 @@ func Test_Quotes_QuoteByAuthor(t *testing.T) {
 			assert.NoError(t, err)
 		}
 
-		qs, err := qService.QuoteByAuthor(QuoteByAuthorInput{
+		qs, err := qService.Quotes(QuotesInput{
 			Author: "Muhammed",
 		})
 		assert.NoError(t, err)

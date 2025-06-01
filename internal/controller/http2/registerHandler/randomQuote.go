@@ -1,6 +1,7 @@
 package registerhandler
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 
@@ -10,7 +11,7 @@ import (
 )
 
 func RandomQuote(router *router.Router) {
-
+	var zeroQuote domain.Quote
 	router.HandleFunc(
 		"GET /quotes/random",
 		[]http2.Middleware{},
@@ -21,11 +22,29 @@ func RandomQuote(router *router.Router) {
 			}
 			// todo:
 			slog.Info(fmt.Sprint(quote))
+			// ----------------------
 			var zeroQuote domain.Quote
 			if quote == zeroQuote {
 				return nil, nil
 			}
+			// ----------------------
+			if quote == (domain.Quote{}) {
+				return nil, nil
+			}
+			// ----------------------
+			if quote.IsZero() {
+				return "нет цитат", nil
+			}
+			// ----------------------
+			if isZeroQuote(quote) {
+				return nil, errors.New("нет цитат")
+			}
+
 			return quote, nil
 		},
 	)
+}
+
+func isZeroQuote(q domain.Quote) bool {
+	return q == (domain.Quote{})
 }

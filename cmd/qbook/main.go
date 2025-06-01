@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -15,7 +16,8 @@ func main() {
 	slog.Info("main: Starting")
 	ctx, cancel := context.WithCancel(context.Background())
 	go func() {
-		if err := app.Run(ctx); err != nil {
+		err := app.Run(ctx)
+		if !errors.Is(err, context.Canceled) && err != nil {
 			slog.Error("app.Run:" + err.Error())
 			os.Exit(1)
 		}

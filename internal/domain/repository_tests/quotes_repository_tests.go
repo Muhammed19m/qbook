@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/Muhammed19m/qbook/internal/domain"
-	assert "github.com/Muhammed19m/qbook/internal/domain/helpers_tests"
+	"github.com/Muhammed19m/qbook/pkg/assert"
 )
 
 func Test_QuoteRepository(t *testing.T, newRepository func() domain.QuoteRepository) {
@@ -85,9 +85,7 @@ func Test_QuoteRepository(t *testing.T, newRepository func() domain.QuoteReposit
 			quotes, err := rep.List(domain.QuotesFilter{ID: 5})
 			assert.Len(t, quotes, 1)
 			assert.NoError(t, err)
-			if quotes[0].ID != 5 {
-				t.Error("unexpected quote: %w", quotes[0])
-			}
+			assert.Equal(t, 5, quotes[0].ID)
 		})
 		t.Run("пустой спиосок, если фильтр по ID который не существует", func(t *testing.T) {
 			rep := newRepository()

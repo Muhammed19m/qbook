@@ -7,6 +7,10 @@ import (
 )
 
 func Run(ctx context.Context) error {
+	generalConfig, err := InitConfig()
+	if err != nil {
+		return err
+	}
 
 	// Инициализация репозиториев
 	repo := memory.Init()
@@ -14,14 +18,7 @@ func Run(ctx context.Context) error {
 	// Инициализация сервисов
 	ss := initServices(repo)
 	// Инициализация и Запуск http контроллера
-	server := initHttpServer(&ss)
+	server := initHttpServer(&ss, generalConfig.HttpServer)
 
-	ch := make(chan error)
-
-	go func() {
-		err := runHttpServer(ctx, server)
-		ch <- err
-	}()
-
-	return <-ch
+	return runHttpServer(ctx, server)
 }

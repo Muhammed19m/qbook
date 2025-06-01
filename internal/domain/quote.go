@@ -13,6 +13,10 @@ type Quote struct {
 	Text   string
 }
 
+func (q Quote) IsZero() bool {
+	return q == (Quote{})
+}
+
 const AuthorNameMaxLen = 50
 
 var (
@@ -67,6 +71,7 @@ func (q Quote) ValidateText() error {
 type QuoteRepository interface {
 	Save(quote Quote) error
 	List(filter QuotesFilter) ([]Quote, error)
+	//Random() (Quote, error)
 	Delete(id int) error
 }
 

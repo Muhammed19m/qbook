@@ -42,14 +42,14 @@ func (router *Router) modulation(handlerRW http2.HandleFuncRW) http.HandlerFunc 
 
 		if data, err = json.Marshal(respData); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			slog.Error("modulation.json.Marshal: ", err.Error())
+			slog.Error("modulation.json.Marshal: " + err.Error())
 			data = fmt.Appendf(nil, `{"error":"%v"}`, err)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		if _, err = w.Write(data); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			slog.Error("modulation.w.Write: ", err.Error())
+			slog.Error("modulation.w.Write: " + err.Error())
 		}
 	}
 }

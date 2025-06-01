@@ -17,27 +17,40 @@ type AddQuoteInput struct {
 	Text   string
 }
 
-// добавление новой Цитаты
-func (q *Quotes) AddQuote(in AddQuoteInput) (domain.Quote, error) {
+func (in AddQuoteInput) Validate() error {
 	quote := domain.Quote{
-		ID:     q.Identifier.GetID(),
 		Author: in.Author,
 		Text:   in.Text,
 	}
 	err := errors.Join(quote.ValidateID(), quote.ValidateAuthor(), quote.ValidateText())
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// AddQuote добавляет новую цитату
+func (q *Quotes) AddQuote(in AddQuoteInput) (domain.Quote, error) {
+	// Валидировать цитату
+	if err := in.Validate(); err != nil {
 		return domain.Quote{}, err
 	}
 
-	err = q.QuoteRepo.Save(quote)
-	if err != nil {
+	// Сохранить цитату
+	quote := domain.Quote{
+		ID:     q.Identifier.GetID(),
+		Author: in.Author,
+		Text:   in.Text,
+	}
+	if err := q.QuoteRepo.Save(quote); err != nil {
 		return domain.Quote{}, err
 	}
 
 	return quote, nil
 }
 
-// получение всех цитат
+// AllQuotes возвращает все цитаты
 func (q *Quotes) AllQuotes() ([]domain.Quote, error) {
 	qs, err := q.QuoteRepo.List(domain.QuotesFilter{})
 	if err != nil {
@@ -47,7 +60,7 @@ func (q *Quotes) AllQuotes() ([]domain.Quote, error) {
 	return qs, nil
 }
 
-// получение случайно цитаты
+// GetRandomQuote возвращает случайную цитату
 func (q *Quotes) GetRandomQuote() (domain.Quote, error) {
 	randId := rand.Intn(q.Identifier.CurrenID() + 1)
 	if randId == 0 {
@@ -64,23 +77,29 @@ func (q *Quotes) GetRandomQuote() (domain.Quote, error) {
 	return qs[0], nil
 }
 
-type QuoteByAuthorInput struct {
+type QuotesInput struct {
 	Author string
 }
 
-// получение цитат по фильтрации по автору
-func (q *Quotes) QuoteByAuthor(in QuoteByAuthorInput) ([]domain.Quote, error) {
+type QuotesOut struct {
+	Quotes []domain.Quote
+}
+
+// Quotes получает цитаты с учетом фильтрации
+func (q *Quotes) Quotes(in QuotesInput) (QuotesOut, error) {
 	quote := domain.Quote{Author: in.Author}
 	if err := quote.ValidateAuthor(); err != nil {
-		return nil, err
+		return QuotesOut{}, err
 	}
 
 	filter := domain.QuotesFilter{Author: in.Author}
 	quotes, err := q.QuoteRepo.List(filter)
 	if err != nil {
-		return nil, err
+		return QuotesOut{}, err
 	}
-	return quotes, nil
+	return QuotesOut{
+		Quotes: quotes,
+	}, nil
 }
 
 type DeleteQuoteInput struct {
@@ -95,7 +114,7 @@ func (in DeleteQuoteInput) Validate() error {
 	return nil
 }
 
-// удаление цитаты по ID
+// DeleteQuote удаляет цитаты по ID
 func (q *Quotes) DeleteQuote(in DeleteQuoteInput) error {
 	if err := in.Validate(); err != nil {
 		return err

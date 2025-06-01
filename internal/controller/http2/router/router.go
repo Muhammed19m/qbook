@@ -11,8 +11,8 @@ type Router struct {
 	http.ServeMux
 }
 
-func (r *Router) HandleFunc(pattern string, midllewares []http2.Middleware, handler http2.HandleFunc) {
-	handlerRW := http2.WrapHandlerInMidllewares(handler, midllewares...)
+func (r *Router) HandleFunc(pattern string, middlewares []http2.Middleware, handler http2.HandleFunc) {
+	handlerRW := http2.WrapHandlerInMiddlewares(handler, middlewares...)
 	newHandler := r.modulation(handlerRW)
 	r.ServeMux.HandleFunc(pattern, newHandler)
 

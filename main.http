@@ -7,8 +7,8 @@ POST {{baseUrl}}/quotes
 Content-Type: application/json
 
 {
-  "author":"Muxa2", 
-  "quote":"1 is simple, but we insist on making it complicated."
+  "author":"Muxa", 
+  "quote":"3 is simple, but we insist on making it complicated."
 }
 
 
@@ -21,8 +21,8 @@ GET  {{baseUrl}}/quotes/random
 
 	
 ### Get Quotes by author
-GET  {{baseUrl}}/quotes?author=Muxa1
+GET  {{baseUrl}}/quotes?author=Muxa2
     
 	
 ### Delete quote by id
-DELETE {{baseUrl}}/quotes/2
+DELETE {{baseUrl}}/quotes/3

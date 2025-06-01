@@ -1,9 +1,9 @@
 package registerhandler
 
 import (
-	"net/http"
 	"strconv"
 
+	"github.com/Muhammed19m/qbook/internal/controller/http2"
 	"github.com/Muhammed19m/qbook/internal/controller/http2/router"
 	"github.com/Muhammed19m/qbook/internal/service"
 )
@@ -12,24 +12,20 @@ func DeleteQuoteByID(router *router.Router) {
 
 	router.HandleFunc(
 		"DELETE /quotes/{id}",
-		func(w http.ResponseWriter, r *http.Request) {
-
-			id := r.PathValue("id")
+		[]http2.Middleware{},
+		func(ctx http2.Context) (any, error) {
+			id := ctx.Request().PathValue("id")
 			num, err := strconv.Atoi(id)
 			if err != nil {
-				http.Error(w, "invalid parametr {id}", http.StatusBadRequest)
-				return
+				return nil, err
 			}
-			err = router.Service.DeleteQuote(service.DeleteQuoteInput{
+			err = ctx.Services().Quotes().DeleteQuote(service.DeleteQuoteInput{
 				ID: num,
 			})
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
+				return nil, err
 			}
-			w.WriteHeader(http.StatusNoContent)
-			// w.Write([]byte("success"))
-
+			return "successed", nil
 		},
 	)
 }

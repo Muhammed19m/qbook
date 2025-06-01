@@ -1,26 +1,31 @@
 package registerhandler
 
 import (
-	"encoding/json"
-	"net/http"
+	"fmt"
+	"log/slog"
 
+	"github.com/Muhammed19m/qbook/internal/controller/http2"
 	"github.com/Muhammed19m/qbook/internal/controller/http2/router"
+	"github.com/Muhammed19m/qbook/internal/domain"
 )
 
 func RandomQuote(router *router.Router) {
 
 	router.HandleFunc(
 		"GET /quotes/random",
-		func(w http.ResponseWriter, r *http.Request) {
-
-			quote, err := router.Service.GetRandomQuote()
+		[]http2.Middleware{},
+		func(ctx http2.Context) (any, error) {
+			quote, err := ctx.Services().Quotes().GetRandomQuote()
 			if err != nil {
-				w.Write([]byte(err.Error()))
-				return
+				return nil, err
 			}
-
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(quote)
+			// todo:
+			slog.Info(fmt.Sprint(quote))
+			var zeroQuote domain.Quote
+			if quote == zeroQuote {
+				return nil, nil
+			}
+			return quote, nil
 		},
 	)
 }

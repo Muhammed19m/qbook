@@ -10,13 +10,12 @@ import (
 	registerhandler "github.com/Muhammed19m/qbook/internal/controller/http2/registerHandler"
 	"github.com/Muhammed19m/qbook/internal/controller/http2/router"
 
-	"github.com/Muhammed19m/qbook/internal/service"
 	"golang.org/x/sync/errgroup"
 )
 
-func initHttpServer(s *service.Quotes) *http.Server {
+func initHttpServer(ss *services) *http.Server {
 	r := &router.Router{
-		Service: s,
+		Service: ss,
 	}
 	registerHandlers(r)
 

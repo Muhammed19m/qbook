@@ -2,8 +2,8 @@ package registerhandler
 
 import (
 	"encoding/json"
-	"net/http"
 
+	"github.com/Muhammed19m/qbook/internal/controller/http2"
 	"github.com/Muhammed19m/qbook/internal/controller/http2/router"
 	"github.com/Muhammed19m/qbook/internal/service"
 )
@@ -17,24 +17,23 @@ func AddQuote(router *router.Router) {
 
 	router.HandleFunc(
 		"POST /quotes",
-		func(w http.ResponseWriter, r *http.Request) {
+		[]http2.Middleware{},
+		func(ctx http2.Context) (any, error) {
 			var rb requestBody
-			if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
-				w.Write([]byte("error decode body"))
-				return
+			if err := json.NewDecoder(ctx.Request().Body).Decode(&rb); err != nil {
+				return nil, err
 			}
 
 			in := service.AddQuoteInput{
 				Author: rb.Author,
 				Text:   rb.Quote,
 			}
-			quote, err := router.Service.AddQuote(in)
+			quote, err := ctx.Services().Quotes().AddQuote(in)
 			if err != nil {
-				w.Write([]byte(err.Error()))
-				return
+				return nil, err
 			}
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(quote)
+
+			return quote, nil
 		},
 	)
 }

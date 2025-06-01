@@ -1,9 +1,7 @@
 package registerhandler
 
 import (
-	"encoding/json"
-	"net/http"
-
+	"github.com/Muhammed19m/qbook/internal/controller/http2"
 	"github.com/Muhammed19m/qbook/internal/controller/http2/router"
 	"github.com/Muhammed19m/qbook/internal/service"
 )
@@ -12,30 +10,25 @@ func AllQuotes(router *router.Router) {
 
 	router.HandleFunc(
 		"GET /quotes",
-		func(w http.ResponseWriter, r *http.Request) {
-
-			author := r.URL.Query().Get("author")
+		[]http2.Middleware{},
+		func(ctx http2.Context) (any, error) {
+			author := ctx.Request().URL.Query().Get("author")
 			if author == "" {
-
-				quote, err := router.Service.AllQuotes()
+				quotes, err := ctx.Services().Quotes().AllQuotes()
 				if err != nil {
-					w.Write([]byte(err.Error()))
-					return
+					return nil, err
 				}
-				w.Header().Set("Content-Type", "application/json")
-				json.NewEncoder(w).Encode(quote)
+				return quotes, nil
 			} else {
 				in := service.QuoteByAuthorInput{
 					Author: author,
 				}
 
-				quotes, err := router.Service.QuoteByAuthor(in)
+				quotes, err := ctx.Services().Quotes().QuoteByAuthor(in)
 				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
+					return nil, err
 				}
-				w.Header().Set("Content-Type", "application/json")
-				json.NewEncoder(w).Encode(quotes)
+				return quotes, nil
 			}
 		},
 	)
